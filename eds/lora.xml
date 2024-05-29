@@ -35,13 +35,13 @@
       <!--**** DataTypeSet: Command Payloads ****-->
       <!--***************************************-->
 
-      <ContainerDataType name="SetPowerRegulatorMode_CmdPayload">
+      <ContainerDataType name="SetLowNoiseAmpMode_CmdPayload" shortDescription="">
         <EntryList>
-          <Entry name="PowerRegulatorMode"   type="SX128X/PowerRegulatorMode"  shortDescription="" />
+          <Entry name="LowNoiseAmpMode" type="SX128X/LowNoiseAmpMode" shortDescription="" />
         </EntryList>
       </ContainerDataType>
       
-      <ContainerDataType name="SetModulationParams_CmdPayload" shortDescription="See SX128x.hpp ModulationParams_t">
+      <ContainerDataType name="SetModulationParams_CmdPayload" shortDescription="">
         <EntryList>
           <Entry name="SpreadingFactor" type="SX128X/ModulationSpreadingFactor" shortDescription="" />
           <Entry name="Bandwidth"       type="SX128X/ModulationBandwidth"       shortDescription="" />
@@ -49,6 +49,18 @@
         </EntryList>
       </ContainerDataType>
          
+      <ContainerDataType name="SetPowerAmpRampTime_CmdPayload">
+        <EntryList>
+          <Entry name="PowerAmpRampTime"   type="SX128X/PowerAmpRampTime"  shortDescription="" />
+        </EntryList>
+      </ContainerDataType>
+
+      <ContainerDataType name="SetPowerRegulatorMode_CmdPayload">
+        <EntryList>
+          <Entry name="PowerRegulatorMode"   type="SX128X/PowerRegulatorMode"  shortDescription="" />
+        </EntryList>
+      </ContainerDataType>
+      
       <ContainerDataType name="SetRadioFrequency_CmdPayload">
         <EntryList>
           <Entry name="Frequency"   type="BASE_TYPES/uint32"  shortDescription="Radio frequency MHz" />
@@ -122,10 +134,28 @@
           <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 0" />
         </ConstraintSet>
       </ContainerDataType>
+       
+      <ContainerDataType name="SetLowNoiseAmpMode" baseType="CommandBase" shortDescription="">
+        <ConstraintSet>
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 1" />
+        </ConstraintSet>
+        <EntryList>
+          <Entry type="SetLowNoiseAmpMode_CmdPayload" name="Payload" />
+        </EntryList>
+      </ContainerDataType>
+      
+      <ContainerDataType name="SetPowerAmpRampTime" baseType="CommandBase" shortDescription="">
+        <ConstraintSet>
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 2" />
+        </ConstraintSet>
+        <EntryList>
+          <Entry type="SetPowerAmpRampTime_CmdPayload" name="Payload" />
+        </EntryList>
+      </ContainerDataType>
       
       <ContainerDataType name="SetPowerRegulatorMode" baseType="CommandBase" shortDescription="">
         <ConstraintSet>
-          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 1" />
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 3" />
         </ConstraintSet>
         <EntryList>
           <Entry type="SetPowerRegulatorMode_CmdPayload" name="Payload" />
@@ -134,7 +164,7 @@
 
       <ContainerDataType name="SetRadioFrequency" baseType="CommandBase" shortDescription="">
         <ConstraintSet>
-          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 2" />
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 4" />
         </ConstraintSet>
         <EntryList>
           <Entry type="SetRadioFrequency_CmdPayload" name="Payload" />
@@ -143,7 +173,7 @@
 
       <ContainerDataType name="SetModulationParams" baseType="CommandBase" shortDescription="">
         <ConstraintSet>
-          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 3" />
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 5" />
         </ConstraintSet>
         <EntryList>
           <Entry type="SetModulationParams_CmdPayload" name="Payload" />
@@ -152,7 +182,7 @@
 
       <ContainerDataType name="SetStandbyMode" baseType="CommandBase" shortDescription="">
         <ConstraintSet>
-          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 4" />
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 6" />
         </ConstraintSet>
         <EntryList>
           <Entry type="SetStandbyMode_CmdPayload" name="Payload" />
@@ -161,13 +191,13 @@
       
       <ContainerDataType name="StartTxDemo" baseType="CommandBase" shortDescription="Start a demo transfer">
         <ConstraintSet>
-          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/NOOP_CC} + 5" />
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/NOOP_CC} + 7" />
         </ConstraintSet>
       </ContainerDataType>
 
       <ContainerDataType name="StopTxDemo" baseType="CommandBase" shortDescription="Stop a demo transfer">
         <ConstraintSet>
-          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/NOOP_CC} + 6" />
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/NOOP_CC} + 8" />
         </ConstraintSet>
       </ContainerDataType>
       

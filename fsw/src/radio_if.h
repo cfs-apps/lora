@@ -53,11 +53,12 @@
 #define RADIO_IF_CHILD_TASK_EID                   (RADIO_IF_BASE_EID + 1)
 #define RADIO_IF_INIT_RADIO_CMD_EID               (RADIO_IF_BASE_EID + 2)
 #define RADIO_IF_SEND_RADIO_TLM_CMD_EID           (RADIO_IF_BASE_EID + 3)
-#define RADIO_IF_SET_SPI_SPEED_CMD_EID            (RADIO_IF_BASE_EID + 4)
-#define RADIO_IF_SET_RADIO_FREQUENCY_CMD_EID      (RADIO_IF_BASE_EID + 5)
-#define RADIO_IF_SET_MODULATION_PARAMS_CMD_EID    (RADIO_IF_BASE_EID + 6)
+#define RADIO_IF_SET_LOW_NOISE_AMP_MODE_CMD_EID   (RADIO_IF_BASE_EID + 4)
+#define RADIO_IF_SET_MODULATION_PARAMS_CMD_EID    (RADIO_IF_BASE_EID + 5)
+#define RADIO_IF_SET_POWER_AMP_RAMP_TIME_CMD_EID  (RADIO_IF_BASE_EID + 6)
 #define RADIO_IF_SET_POWER_REGULATOR_MODE_CMD_EID (RADIO_IF_BASE_EID + 7)
-#define RADIO_IF_SET_STANDBY_MODE_CMD_EID         (RADIO_IF_BASE_EID + 8)
+#define RADIO_IF_SET_RADIO_FREQUENCY_CMD_EID      (RADIO_IF_BASE_EID + 8)
+#define RADIO_IF_SET_STANDBY_MODE_CMD_EID         (RADIO_IF_BASE_EID + 9)
 
 /**********************/
 /** Type Definitions **/
@@ -68,9 +69,12 @@
 typedef struct
 {
    uint32  Frequency;
-   SX128X_PowerRegulatorMode_Enum_t PowerRegulatorMode;
-   SX128X_StandbyMode_Enum_t        StandbyMode;
-   LORA_SetModulationParams_CmdPayload_t Modulation;
+   
+   SX128X_LowNoiseAmpMode_Enum_t          LowNoiseAmpMode;
+   SX128X_PowerAmpRampTime_Enum_t         PowerAmpRampTime;
+   SX128X_PowerRegulatorMode_Enum_t       PowerRegulatorMode;
+   SX128X_StandbyMode_Enum_t              StandbyMode;
+   LORA_SetModulationParams_CmdPayload_t  Modulation;
 
 } RADIO_IF_Config;
 
@@ -144,6 +148,15 @@ bool RADIO_IF_SendRadioTlmCmd(void *ObjDataPtr, const CFE_MSG_Message_t *MsgPtr)
 
 
 /******************************************************************************
+** Function: RADIO_IF_SetLowNoiseAmpModeCmd
+**
+** Notes:
+**   1. Must match CMDMGR_CmdFuncPtr_t function signature
+*/
+bool RADIO_IF_SetLowNoiseAmpModeCmd(void *ObjDataPtr, const CFE_MSG_Message_t *MsgPtr);
+
+
+/******************************************************************************
 ** Function: RADIO_IF_SetModulationParamsCmd
 **
 ** Notes:
@@ -159,6 +172,15 @@ bool RADIO_IF_SetModulationParamsCmd(void *ObjDataPtr, const CFE_MSG_Message_t *
 **   1. See file prologue notes for command function design notes. 
 */
 bool RADIO_IF_SetPowerRegulatorModeCmd(void *ObjDataPtr, const CFE_MSG_Message_t *MsgPtr);
+
+
+/******************************************************************************
+** Function: RADIO_IF_SetPowerAmpRampTimeCmd
+**
+** Notes:
+**   1. See file prologue notes for command function design notes. 
+*/
+bool RADIO_IF_SetPowerAmpRampTimeCmd(void *ObjDataPtr, const CFE_MSG_Message_t *MsgPtr);
 
 
 /******************************************************************************

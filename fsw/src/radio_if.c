@@ -169,6 +169,46 @@ bool RADIO_IF_SendRadioTlmCmd(void *ObjDataPtr, const CFE_MSG_Message_t *MsgPtr)
 
 
 /******************************************************************************
+** Function: RADIO_IF_SetLowNoiseAmpModeCmd
+**
+** Notes:
+**   1. Must match CMDMGR_CmdFuncPtr_t function signature
+*/
+bool RADIO_IF_SetLowNoiseAmpModeCmd(void *ObjDataPtr, const CFE_MSG_Message_t *MsgPtr)
+{
+   
+   const LORA_SetLowNoiseAmpMode_CmdPayload_t *Cmd = CMDMGR_PAYLOAD_PTR(MsgPtr, LORA_SetLowNoiseAmpMode_t);
+   bool RetStatus = false;
+
+   if (Cmd->LowNoiseAmpMode >= SX128X_LowNoiseAmpMode_Enum_t_MIN && Cmd->LowNoiseAmpMode <= SX128X_LowNoiseAmpMode_Enum_t_MAX)
+   {
+      RadioIf->RadioConfig.LowNoiseAmpMode = Cmd->LowNoiseAmpMode;
+      
+      RetStatus = RADIO_SetLowNoiseAmpMode(Cmd->LowNoiseAmpMode);
+      if (RetStatus)
+      {
+         CFE_EVS_SendEvent(RADIO_IF_SET_LOW_NOISE_AMP_MODE_CMD_EID, CFE_EVS_EventType_INFORMATION,
+                           "Set radio power amp sensitivity mode succeeded: Mode = %d", Cmd->LowNoiseAmpMode);
+      }
+      else
+      {
+         CFE_EVS_SendEvent(RADIO_IF_SET_LOW_NOISE_AMP_MODE_CMD_EID, CFE_EVS_EventType_ERROR,
+                           "Set radio power amp sensitivity mode command failed");
+      }
+   }
+   else
+   {
+      CFE_EVS_SendEvent(RADIO_IF_SET_LOW_NOISE_AMP_MODE_CMD_EID, CFE_EVS_EventType_ERROR,
+                           "Set radio power amp sensitivity mode command failed, invalid mode %d.",
+                           Cmd->LowNoiseAmpMode);
+   }
+
+   return RetStatus;
+   
+}/* RADIO_IF_SetLowNoiseAmpModeCmd() */
+
+
+/******************************************************************************
 ** Function: RADIO_IF_SetModulationParamsCmd
 **
 ** Notes:
@@ -202,6 +242,46 @@ bool RADIO_IF_SetModulationParamsCmd(void *ObjDataPtr, const CFE_MSG_Message_t *
    return RetStatus;
    
 } /* RADIO_IF_SetModulationParamsCmd() */
+
+
+/******************************************************************************
+** Function: RADIO_IF_PowerAmpRampTimeCmd
+**
+** Notes:
+**   1. Must match CMDMGR_CmdFuncPtr_t function signature
+*/
+bool RADIO_IF_SetPowerAmpRampTimeCmd(void *ObjDataPtr, const CFE_MSG_Message_t *MsgPtr)
+{
+   
+   const LORA_SetPowerAmpRampTime_CmdPayload_t *Cmd = CMDMGR_PAYLOAD_PTR(MsgPtr, LORA_SetPowerAmpRampTime_t);
+   bool RetStatus = false;
+
+   if (Cmd->PowerAmpRampTime >= SX128X_PowerAmpRampTime_Enum_t_MIN && Cmd->PowerAmpRampTime <= SX128X_PowerAmpRampTime_Enum_t_MAX)
+   {
+      RadioIf->RadioConfig.PowerAmpRampTime = Cmd->PowerAmpRampTime;
+      
+      RetStatus = RADIO_SetLowNoiseAmpMode(Cmd->PowerAmpRampTime);
+      if (RetStatus)
+      {
+         CFE_EVS_SendEvent(RADIO_IF_SET_POWER_AMP_RAMP_TIME_CMD_EID, CFE_EVS_EventType_INFORMATION,
+                           "Set radio power amp ramp time succeeded: Mode = %d", Cmd->PowerAmpRampTime);
+      }
+      else
+      {
+         CFE_EVS_SendEvent(RADIO_IF_SET_POWER_AMP_RAMP_TIME_CMD_EID, CFE_EVS_EventType_ERROR,
+                           "Set radio power amp ramp time command failed");
+      }
+   }
+   else
+   {
+      CFE_EVS_SendEvent(RADIO_IF_SET_POWER_AMP_RAMP_TIME_CMD_EID, CFE_EVS_EventType_ERROR,
+                           "Set radio power amp ramp time command failed, invalid mode %d.",
+                           Cmd->PowerAmpRampTime);
+   }
+
+   return RetStatus;
+   
+}/* RADIO_IF_PowerAmpRampTimeCmd() */
 
 
 /******************************************************************************
@@ -240,9 +320,7 @@ bool RADIO_IF_SetPowerRegulatorModeCmd(void *ObjDataPtr, const CFE_MSG_Message_t
    }
 
    return RetStatus;
-   
-
-   
+      
 } /* RADIO_IF_SetPowerRegulatorModeCmd() */
 
 

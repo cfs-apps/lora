@@ -179,7 +179,8 @@ bool LORA_TX_StopDemoCmd(void* DataObjPtr, const CFE_MSG_Message_t *MsgPtr)
 ** Function: RunDemoScript
 **
 ** Notes:
-**   1. This function is based on lora_tx.cpp
+**   1. This function is based on lora_tx.cpp. The original code is used as
+**      comment blocks. s
 */
 static bool RunDemoScript(void)
 {
@@ -227,7 +228,7 @@ static bool RunDemoScript(void)
    }
    OS_TaskDelay(1000);
 
-   RetStatus = RADIO_SetPowerRegulatorMode(SX128X_PowerRegulatorMode_USE_LDO);
+   RadioStatus = RADIO_SetPowerRegulatorMode(SX128X_PowerRegulatorMode_USE_LDO);
    if (RadioStatus)
    {
       CFE_EVS_SendEvent(LORA_TX_DEMO_SCRIPT_EID, CFE_EVS_EventType_INFORMATION,
@@ -240,6 +241,32 @@ static bool RunDemoScript(void)
    }
    OS_TaskDelay(1000);
 
+   RadioStatus = RADIO_SetLowNoiseAmpMode(SX128X_LowNoiseAmpMode_HIGH_SENSITIVITY);
+   if (RadioStatus)
+   {
+      CFE_EVS_SendEvent(LORA_TX_DEMO_SCRIPT_EID, CFE_EVS_EventType_INFORMATION,
+                        "Set radio power low noice amplifier mode to SX128X_LowNoiseAmp_HIGH_SENSITIVITY_MODE");
+   }
+   else
+   {
+      CFE_EVS_SendEvent(LORA_TX_DEMO_SCRIPT_EID, CFE_EVS_EventType_ERROR,
+                        "Error setting Set radio power low noice amplifier mode to SX128X_LowNoiseAmp_HIGH_SENSITIVITY_MODE");
+   }
+   OS_TaskDelay(1000);
+
+   RadioStatus = RADIO_SetPowerAmpRampTime(SX128X_PowerAmpRampTime_20_US);
+   if (RadioStatus)
+   {
+      CFE_EVS_SendEvent(LORA_TX_DEMO_SCRIPT_EID, CFE_EVS_EventType_INFORMATION,
+                        "Set radio power amp ramp time to SX128X_PowerAmpRampTime_20_US");
+   }
+   else
+   {
+      CFE_EVS_SendEvent(LORA_TX_DEMO_SCRIPT_EID, CFE_EVS_EventType_ERROR,
+                        "Error setting Set radio power amp ramp time to SX128X_PowerAmpRampTime_20_US");
+   }
+   OS_TaskDelay(1000);
+   
    /** lora_tx.cpp
          Radio.SetBufferBaseAddresses(0x00, 0x00);
          puts("SetBufferBaseAddresses done");

@@ -233,7 +233,9 @@ static int32 InitApp(void)
       CMDMGR_RegisterFunc(CMDMGR_OBJ, CMDMGR_RESET_CMD_FC,  NULL, LORA_APP_ResetAppCmd, 0);
 
       CMDMGR_RegisterFunc(CMDMGR_OBJ, LORA_SEND_RADIO_TLM_CC,           RADIO_IF_OBJ, RADIO_IF_SendRadioTlmCmd,          0);
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, LORA_SET_LOW_NOISE_AMP_MODE_CC,   RADIO_IF_OBJ, RADIO_IF_SetLowNoiseAmpModeCmd,    sizeof(LORA_SetLowNoiseAmpMode_CmdPayload_t));
       CMDMGR_RegisterFunc(CMDMGR_OBJ, LORA_SET_MODULATION_PARAMS_CC,    RADIO_IF_OBJ, RADIO_IF_SetModulationParamsCmd,   sizeof(LORA_SetModulationParams_CmdPayload_t));
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, LORA_SET_POWER_AMP_RAMP_TIME_CC,  RADIO_IF_OBJ, RADIO_IF_SetPowerAmpRampTimeCmd,   sizeof(LORA_SetPowerAmpRampTime_CmdPayload_t));
       CMDMGR_RegisterFunc(CMDMGR_OBJ, LORA_SET_POWER_REGULATOR_MODE_CC, RADIO_IF_OBJ, RADIO_IF_SetPowerRegulatorModeCmd, sizeof(LORA_SetPowerRegulatorMode_CmdPayload_t));
       CMDMGR_RegisterFunc(CMDMGR_OBJ, LORA_SET_RADIO_FREQUENCY_CC,      RADIO_IF_OBJ, RADIO_IF_SetRadioFrequencyCmd,     sizeof(LORA_SetRadioFrequency_CmdPayload_t));
       CMDMGR_RegisterFunc(CMDMGR_OBJ, LORA_SET_STANDBY_MODE_CC,         RADIO_IF_OBJ, RADIO_IF_SetStandbyModeCmd,        sizeof(LORA_SetStandbyMode_CmdPayload_t));
