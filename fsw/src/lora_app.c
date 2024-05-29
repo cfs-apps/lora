@@ -208,7 +208,7 @@ static int32 InitApp(void)
       Status = CHILDMGR_Constructor(RX_CHILDMGR_OBJ, ChildMgr_TaskMainCallback,
                                     LORA_RX_ChildTask, &ChildTaskInit); 
 
-      LORA_TX_Constructor(LORA_TX_OBJ);
+      LORA_TX_Constructor(LORA_TX_OBJ, INITBL_GetStrConfig(INITBL_OBJ, CFG_TX_CHILD_SEM_NAME));
       ChildTaskInit.TaskName  = INITBL_GetStrConfig(INITBL_OBJ, CFG_TX_CHILD_NAME);
       ChildTaskInit.StackSize = INITBL_GetIntConfig(INITBL_OBJ, CFG_TX_CHILD_STACK_SIZE);
       ChildTaskInit.Priority  = INITBL_GetIntConfig(INITBL_OBJ, CFG_TX_CHILD_PRIORITY);
@@ -232,9 +232,11 @@ static int32 InitApp(void)
       CMDMGR_RegisterFunc(CMDMGR_OBJ, CMDMGR_NOOP_CMD_FC,   NULL, LORA_APP_NoOpCmd,     0);
       CMDMGR_RegisterFunc(CMDMGR_OBJ, CMDMGR_RESET_CMD_FC,  NULL, LORA_APP_ResetAppCmd, 0);
 
-      CMDMGR_RegisterFunc(CMDMGR_OBJ, LORA_SEND_RADIO_TLM_CC,      RADIO_IF_OBJ, RADIO_IF_SendRadioTlmCmd,      0);
-      CMDMGR_RegisterFunc(CMDMGR_OBJ, LORA_SET_LO_RA_PARAMS_CC,    RADIO_IF_OBJ, RADIO_IF_SetLoRaParamsCmd,     sizeof(LORA_SetLoRaParams_CmdPayload_t));
-      CMDMGR_RegisterFunc(CMDMGR_OBJ, LORA_SET_RADIO_FREQUENCY_CC, RADIO_IF_OBJ, RADIO_IF_SetRadioFrequencyCmd, sizeof(LORA_SetRadioFrequency_CmdPayload_t));
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, LORA_SEND_RADIO_TLM_CC,           RADIO_IF_OBJ, RADIO_IF_SendRadioTlmCmd,          0);
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, LORA_SET_MODULATION_PARAMS_CC,    RADIO_IF_OBJ, RADIO_IF_SetModulationParamsCmd,   sizeof(LORA_SetModulationParams_CmdPayload_t));
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, LORA_SET_POWER_REGULATOR_MODE_CC, RADIO_IF_OBJ, RADIO_IF_SetPowerRegulatorModeCmd, sizeof(LORA_SetPowerRegulatorMode_CmdPayload_t));
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, LORA_SET_RADIO_FREQUENCY_CC,      RADIO_IF_OBJ, RADIO_IF_SetRadioFrequencyCmd,     sizeof(LORA_SetRadioFrequency_CmdPayload_t));
+      CMDMGR_RegisterFunc(CMDMGR_OBJ, LORA_SET_STANDBY_MODE_CC,         RADIO_IF_OBJ, RADIO_IF_SetStandbyModeCmd,        sizeof(LORA_SetStandbyMode_CmdPayload_t));
 
       CMDMGR_RegisterFunc(CMDMGR_OBJ, LORA_START_TX_DEMO_CC, LORA_TX_OBJ, LORA_TX_StartDemoCmd, 0);
       CMDMGR_RegisterFunc(CMDMGR_OBJ, LORA_STOP_TX_DEMO_CC,  LORA_TX_OBJ, LORA_TX_StopDemoCmd,  0);

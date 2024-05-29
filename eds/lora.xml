@@ -35,20 +35,32 @@
       <!--**** DataTypeSet: Command Payloads ****-->
       <!--***************************************-->
 
+      <ContainerDataType name="SetPowerRegulatorMode_CmdPayload">
+        <EntryList>
+          <Entry name="PowerRegulatorMode"   type="SX128X/PowerRegulatorMode"  shortDescription="" />
+        </EntryList>
+      </ContainerDataType>
+      
+      <ContainerDataType name="SetModulationParams_CmdPayload" shortDescription="See SX128x.hpp ModulationParams_t">
+        <EntryList>
+          <Entry name="SpreadingFactor" type="SX128X/ModulationSpreadingFactor" shortDescription="" />
+          <Entry name="Bandwidth"       type="SX128X/ModulationBandwidth"       shortDescription="" />
+          <Entry name="CodingRate"      type="SX128X/ModulationCodingRate"      shortDescription="" />
+        </EntryList>
+      </ContainerDataType>
+         
       <ContainerDataType name="SetRadioFrequency_CmdPayload">
         <EntryList>
           <Entry name="Frequency"   type="BASE_TYPES/uint32"  shortDescription="Radio frequency MHz" />
         </EntryList>
       </ContainerDataType>
       
-      <ContainerDataType name="SetLoRaParams_CmdPayload" shortDescription="See SX128x.hpp ModulationParams_t">
+      <ContainerDataType name="SetStandbyMode_CmdPayload">
         <EntryList>
-          <Entry name="SpreadingFactor" type="SX128X/LoRaSpreadingFactor" shortDescription="" />
-          <Entry name="Bandwidth"       type="SX128X/LoRaBandwidth"       shortDescription="" />
-          <Entry name="CodingRate"      type="SX128X/LoRaCodingRate"      shortDescription="" />
+          <Entry name="StandbyMode"   type="SX128X/StandbyMode"  shortDescription="" />
         </EntryList>
       </ContainerDataType>
-         
+      
       <!--*****************************************-->
       <!--**** DataTypeSet: Telemetry Payloads ****-->
       <!--*****************************************-->
@@ -80,9 +92,9 @@
           <Entry name="RadioPinTxEn"    type="BASE_TYPES/uint8"     />
           <Entry name="RadioPinRxEn"    type="BASE_TYPES/uint8"     />
           <Entry name="RadioFrequency"  type="BASE_TYPES/uint32"    />          
-          <Entry name="LoRaSpreadingFactor" type="SX128X/LoRaSpreadingFactor" />
-          <Entry name="LoRaBandwidth"       type="SX128X/LoRaBandwidth"       />
-          <Entry name="LoRaCodingRate"      type="SX128X/LoRaCodingRate"      />
+          <Entry name="ModulationSpreadingFactor" type="SX128X/ModulationSpreadingFactor" />
+          <Entry name="ModulationBandwidth"       type="SX128X/ModulationBandwidth"       />
+          <Entry name="ModulationCodingRate"      type="SX128X/ModulationCodingRate"      />
         </EntryList>
       </ContainerDataType>
         
@@ -111,33 +123,51 @@
         </ConstraintSet>
       </ContainerDataType>
       
-      <ContainerDataType name="SetRadioFrequency" baseType="CommandBase" shortDescription="">
+      <ContainerDataType name="SetPowerRegulatorMode" baseType="CommandBase" shortDescription="">
         <ConstraintSet>
           <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 1" />
+        </ConstraintSet>
+        <EntryList>
+          <Entry type="SetPowerRegulatorMode_CmdPayload" name="Payload" />
+        </EntryList>
+      </ContainerDataType>
+
+      <ContainerDataType name="SetRadioFrequency" baseType="CommandBase" shortDescription="">
+        <ConstraintSet>
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 2" />
         </ConstraintSet>
         <EntryList>
           <Entry type="SetRadioFrequency_CmdPayload" name="Payload" />
         </EntryList>
       </ContainerDataType>
 
-      <ContainerDataType name="SetLoRaParams" baseType="CommandBase" shortDescription="">
+      <ContainerDataType name="SetModulationParams" baseType="CommandBase" shortDescription="">
         <ConstraintSet>
-          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 2" />
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 3" />
         </ConstraintSet>
         <EntryList>
-          <Entry type="SetLoRaParams_CmdPayload" name="Payload" />
+          <Entry type="SetModulationParams_CmdPayload" name="Payload" />
         </EntryList>
       </ContainerDataType>
 
+      <ContainerDataType name="SetStandbyMode" baseType="CommandBase" shortDescription="">
+        <ConstraintSet>
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/APP_BASE_CC} + 4" />
+        </ConstraintSet>
+        <EntryList>
+          <Entry type="SetStandbyMode_CmdPayload" name="Payload" />
+        </EntryList>
+      </ContainerDataType>
+      
       <ContainerDataType name="StartTxDemo" baseType="CommandBase" shortDescription="Start a demo transfer">
         <ConstraintSet>
-          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/NOOP_CC} + 3" />
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/NOOP_CC} + 5" />
         </ConstraintSet>
       </ContainerDataType>
 
       <ContainerDataType name="StopTxDemo" baseType="CommandBase" shortDescription="Stop a demo transfer">
         <ConstraintSet>
-          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/NOOP_CC} + 4" />
+          <ValueConstraint entry="Sec.FunctionCode" value="${APP_C_FW/NOOP_CC} + 6" />
         </ConstraintSet>
       </ContainerDataType>
       

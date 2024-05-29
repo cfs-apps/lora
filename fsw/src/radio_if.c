@@ -79,9 +79,9 @@ void RADIO_IF_Constructor(RADIO_IF_Class_t *RadioIfPtr, INITBL_Class_t *IniTbl)
    
    RadioIf->RadioConfig.Frequency = INITBL_GetIntConfig(INITBL_OBJ, CFG_RADIO_FREQUENCY);
    
-   RadioIf->RadioConfig.LoRa.SpreadingFactor = INITBL_GetIntConfig(INITBL_OBJ, CFG_RADIO_LORA_SF);
-   RadioIf->RadioConfig.LoRa.Bandwidth       = INITBL_GetIntConfig(INITBL_OBJ, CFG_RADIO_LORA_BW);
-   RadioIf->RadioConfig.LoRa.CodingRate      = INITBL_GetIntConfig(INITBL_OBJ, CFG_RADIO_LORA_CR);
+   RadioIf->RadioConfig.Modulation.SpreadingFactor = INITBL_GetIntConfig(INITBL_OBJ, CFG_RADIO_LORA_SF);
+   RadioIf->RadioConfig.Modulation.Bandwidth       = INITBL_GetIntConfig(INITBL_OBJ, CFG_RADIO_LORA_BW);
+   RadioIf->RadioConfig.Modulation.CodingRate      = INITBL_GetIntConfig(INITBL_OBJ, CFG_RADIO_LORA_CR);
       
    CFE_MSG_Init(CFE_MSG_PTR(RadioIf->RadioTlm.TelemetryHeader), CFE_SB_ValueToMsgId(INITBL_GetIntConfig(INITBL_OBJ, CFG_LORA_RADIO_TLM_TOPICID)), sizeof(LORA_RadioTlm_t));
 
@@ -153,10 +153,10 @@ bool RADIO_IF_SendRadioTlmCmd(void *ObjDataPtr, const CFE_MSG_Message_t *MsgPtr)
    RadioTlmPayload->RadioPinTxEn   = 7;
    RadioTlmPayload->RadioPinRxEn   = 8;
 
-   RadioTlmPayload->RadioFrequency      = RadioIf->RadioConfig.Frequency;
-   RadioTlmPayload->LoRaSpreadingFactor = RadioIf->RadioConfig.LoRa.SpreadingFactor;
-   RadioTlmPayload->LoRaBandwidth       = RadioIf->RadioConfig.LoRa.Bandwidth;
-   RadioTlmPayload->LoRaCodingRate      = RadioIf->RadioConfig.LoRa.CodingRate;
+   RadioTlmPayload->RadioFrequency            = RadioIf->RadioConfig.Frequency;
+   RadioTlmPayload->ModulationSpreadingFactor = RadioIf->RadioConfig.Modulation.SpreadingFactor;
+   RadioTlmPayload->ModulationBandwidth       = RadioIf->RadioConfig.Modulation.Bandwidth;
+   RadioTlmPayload->ModulationCodingRate      = RadioIf->RadioConfig.Modulation.CodingRate;
    
    CFE_SB_TimeStampMsg(CFE_MSG_PTR(RadioIf->RadioTlm.TelemetryHeader));
    CFE_SB_TransmitMsg(CFE_MSG_PTR(RadioIf->RadioTlm.TelemetryHeader), true);
@@ -169,39 +169,81 @@ bool RADIO_IF_SendRadioTlmCmd(void *ObjDataPtr, const CFE_MSG_Message_t *MsgPtr)
 
 
 /******************************************************************************
-** Function: RADIO_IF_SetLoRaParamsCmd
+** Function: RADIO_IF_SetModulationParamsCmd
 **
 ** Notes:
 **   1. See file prologue notes for command function design notes. 
 */
-bool RADIO_IF_SetLoRaParamsCmd(void *ObjDataPtr, const CFE_MSG_Message_t *MsgPtr)
+bool RADIO_IF_SetModulationParamsCmd(void *ObjDataPtr, const CFE_MSG_Message_t *MsgPtr)
 {
    
-   const LORA_SetLoRaParams_CmdPayload_t *Cmd = CMDMGR_PAYLOAD_PTR(MsgPtr, LORA_SetLoRaParams_t);
+   const LORA_SetModulationParams_CmdPayload_t *Cmd = CMDMGR_PAYLOAD_PTR(MsgPtr, LORA_SetModulationParams_t);
    bool RetStatus = false;
 
-   RadioIf->RadioConfig.LoRa.SpreadingFactor = Cmd->SpreadingFactor;
-   RadioIf->RadioConfig.LoRa.Bandwidth       = Cmd->Bandwidth;
-   RadioIf->RadioConfig.LoRa.CodingRate      = Cmd->CodingRate;
+   RadioIf->RadioConfig.Modulation.SpreadingFactor = Cmd->SpreadingFactor;
+   RadioIf->RadioConfig.Modulation.Bandwidth       = Cmd->Bandwidth;
+   RadioIf->RadioConfig.Modulation.CodingRate      = Cmd->CodingRate;
 
-   RetStatus = RADIO_SetLoraParams(RadioIf->RadioConfig.LoRa.SpreadingFactor,
-                                   RadioIf->RadioConfig.LoRa.Bandwidth,
-                                   RadioIf->RadioConfig.LoRa.CodingRate);
+   RetStatus = RADIO_SetModulationParams(RadioIf->RadioConfig.Modulation.SpreadingFactor,
+                                         RadioIf->RadioConfig.Modulation.Bandwidth,
+                                         RadioIf->RadioConfig.Modulation.CodingRate);
    if (RetStatus)
    {
-      CFE_EVS_SendEvent(RADIO_IF_SET_LORA_PARAMS_CMD_EID, CFE_EVS_EventType_INFORMATION,
-                        "Set LoRa paramaters: SF=%d, BW=%d, RC=%d", Cmd->SpreadingFactor,
+      CFE_EVS_SendEvent(RADIO_IF_SET_MODULATION_PARAMS_CMD_EID, CFE_EVS_EventType_INFORMATION,
+                        "Set modulation parameters command succeeded: SF=%d, BW=%d, RC=%d", Cmd->SpreadingFactor,
                         Cmd->Bandwidth, Cmd->CodingRate);
    }
    else
    {
-      CFE_EVS_SendEvent(RADIO_IF_SET_LORA_PARAMS_CMD_EID, CFE_EVS_EventType_ERROR,
-                        "Set LoRa parameters failed");
+      CFE_EVS_SendEvent(RADIO_IF_SET_MODULATION_PARAMS_CMD_EID, CFE_EVS_EventType_ERROR,
+                        "Set modulation parameters command failed");
    }
 
    return RetStatus;
    
-} /* RADIO_IF_SetLoRaParamsCmd() */
+} /* RADIO_IF_SetModulationParamsCmd() */
+
+
+/******************************************************************************
+** Function: RADIO_IF_SetPowerRegulatorModeCmd
+**
+** Notes:
+**   1. See file prologue notes for command function design notes. 
+*/
+bool RADIO_IF_SetPowerRegulatorModeCmd(void *ObjDataPtr, const CFE_MSG_Message_t *MsgPtr)
+{
+   
+   const LORA_SetPowerRegulatorMode_CmdPayload_t *Cmd = CMDMGR_PAYLOAD_PTR(MsgPtr, LORA_SetPowerRegulatorMode_t);
+   bool RetStatus = false;
+
+   if (Cmd->PowerRegulatorMode >= SX128X_PowerRegulatorMode_Enum_t_MIN && Cmd->PowerRegulatorMode <= SX128X_PowerRegulatorMode_Enum_t_MAX)
+   {
+      RadioIf->RadioConfig.PowerRegulatorMode = Cmd->PowerRegulatorMode;
+      
+      RetStatus = RADIO_SetPowerRegulatorMode(Cmd->PowerRegulatorMode);
+      if (RetStatus)
+      {
+         CFE_EVS_SendEvent(RADIO_IF_SET_POWER_REGULATOR_MODE_CMD_EID, CFE_EVS_EventType_INFORMATION,
+                           "Set radio power regulator mode succeeded: Mode = %d", Cmd->PowerRegulatorMode);
+      }
+      else
+      {
+         CFE_EVS_SendEvent(RADIO_IF_SET_POWER_REGULATOR_MODE_CMD_EID, CFE_EVS_EventType_ERROR,
+                           "Set radio power regulator mode command failed");
+      }
+   }
+   else
+   {
+      CFE_EVS_SendEvent(RADIO_IF_SET_POWER_REGULATOR_MODE_CMD_EID, CFE_EVS_EventType_ERROR,
+                           "Set radio power regulator mode command failed, invalid mode %d.",
+                           Cmd->PowerRegulatorMode);
+   }
+
+   return RetStatus;
+   
+
+   
+} /* RADIO_IF_SetPowerRegulatorModeCmd() */
 
 
 /******************************************************************************
@@ -224,21 +266,63 @@ bool RADIO_IF_SetRadioFrequencyCmd(void *ObjDataPtr, const CFE_MSG_Message_t *Ms
       if (RetStatus)
       {
          CFE_EVS_SendEvent(RADIO_IF_SET_RADIO_FREQUENCY_CMD_EID, CFE_EVS_EventType_INFORMATION,
-                           "Set radio frequency to %d Mhz", Cmd->Frequency);
+                           "Set radio frequency command succeeded: Frequency = %d Mhz", Cmd->Frequency);
       }
       else
       {
          CFE_EVS_SendEvent(RADIO_IF_SET_RADIO_FREQUENCY_CMD_EID, CFE_EVS_EventType_ERROR,
-                           "Set radio frequency failed");
+                           "Set radio frequency command failed");
       }
    }
    else
    {
       CFE_EVS_SendEvent(RADIO_IF_SET_RADIO_FREQUENCY_CMD_EID, CFE_EVS_EventType_ERROR,
-                           "Set radio frequency failed, invalid frequency %d.",
+                           "Set radio frequency command failed, invalid frequency %d.",
                            Cmd->Frequency);
    }
 
    return RetStatus;
    
 } /* RADIO_IF_SetRadioFrequencyCmd() */
+
+
+/******************************************************************************
+** Function: RADIO_IF_SetStandbyModeCmd
+**
+** Notes:
+**   1. See file prologue notes for command function design notes. 
+*/
+bool RADIO_IF_SetStandbyModeCmd(void *ObjDataPtr, const CFE_MSG_Message_t *MsgPtr)
+{
+   
+   const LORA_SetStandbyMode_CmdPayload_t *Cmd = CMDMGR_PAYLOAD_PTR(MsgPtr, LORA_SetStandbyMode_t);
+   bool RetStatus = false;
+
+   if (Cmd->StandbyMode >= SX128X_StandbyMode_Enum_t_MIN && Cmd->StandbyMode <= SX128X_StandbyMode_Enum_t_MAX)
+   {
+      RadioIf->RadioConfig.StandbyMode = Cmd->StandbyMode;
+      
+      RetStatus = RADIO_SetStandbyMode(Cmd->StandbyMode);
+      if (RetStatus)
+      {
+         CFE_EVS_SendEvent(RADIO_IF_SET_STANDBY_MODE_CMD_EID, CFE_EVS_EventType_INFORMATION,
+                           "Set radio standby mode succeeded: Mode = %d", Cmd->StandbyMode);
+      }
+      else
+      {
+         CFE_EVS_SendEvent(RADIO_IF_SET_STANDBY_MODE_CMD_EID, CFE_EVS_EventType_ERROR,
+                           "Set radio standby mode command failed");
+      }
+   }
+   else
+   {
+      CFE_EVS_SendEvent(RADIO_IF_SET_STANDBY_MODE_CMD_EID, CFE_EVS_EventType_ERROR,
+                           "Set radio standby mode command failed, invalid mode %d.",
+                           Cmd->StandbyMode);
+   }
+
+   return RetStatus;
+   
+} /* RADIO_IF_SetStandbyModeCmd() */
+
+

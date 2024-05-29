@@ -44,7 +44,8 @@
 #define LORA_TX_CONFIG_SUBSCRIPTIONS_EID  (LORA_TX_BASE_EID + 1)
 #define LORA_TX_CHILD_TASK_EID            (LORA_TX_BASE_EID + 2)
 #define LORA_TX_START_DEMO_EID            (LORA_TX_BASE_EID + 3)
-#define LORA_TX_STOP_DEMO_EID             (LORA_TX_BASE_EID + 4)
+#define LORA_TX_DEMO_SCRIPT_EID           (LORA_TX_BASE_EID + 4)
+#define LORA_TX_STOP_DEMO_EID             (LORA_TX_BASE_EID + 5)
 
 /**********************/
 /** Type Definitions **/
@@ -52,7 +53,9 @@
 
 typedef struct
 {
-
+   int32   RunStatus;
+   uint32  WakeUpSemaphore;
+   
    bool    DemoActive;
    uint32  PktCnt;
    uint32  PktErrCnt;
@@ -74,7 +77,7 @@ typedef struct
 **   1. This must be called prior to any other member functions.
 **
 */
-void LORA_TX_Constructor(LORA_TX_Class_t *LoraTxPtr);
+void LORA_TX_Constructor(LORA_TX_Class_t *LoraTxPtr, const char *SemName);
 
 
 /******************************************************************************

@@ -21,6 +21,7 @@
       "RX_CHILD_STACK_SIZE": 16384,
       "RX_CHILD_PRIORITY":   80,
 
+      "TX_CHILD_SEM_NAME":   "LORA_TX_SEM",
       "TX_CHILD_NAME":       "LORA_TX_CHILD",
       "TX_CHILD_PERF_ID":    45,
       "TX_CHILD_STACK_SIZE": 16384,
