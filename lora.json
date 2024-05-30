@@ -2,27 +2,27 @@
 
    "app": {
    
-   "title": "LORA_TX",
-   "version": "1.2.0",
+   "title": "LORA",
+   "version": "1.0.0",
    "supplier": "Open STEMware",
    "copyright": "bitValence",
-   "url": "https://github.com/cfs-apps/lora_tx",
+   "url": "https://github.com/cfs-apps/lora",
 
    "description": [
-      "Long Range (LoRa) Transmit app for a tech demo of a Durand/Packard 2400 MHz link." 
+      "Long Range (LoRa) app for a tech demo of a Durand/Packard 2400 MHz link." 
    ],
 
    "cfs": {
       "cfe-type": "CFE_APP",
-      "obj-file": "lora_tx",
-      "entry-symbol": "LORA_TX_AppMain",
-      "name": "LORA_TX",
+      "obj-file": "lora",
+      "entry-symbol": "LORA_AppMain",
+      "name": "LORA",
       "priority": 70,
       "stack": 32768,
       "load_addr": 0,
       "exception-action": 0,
       "app-framework": "osk",
-      "tables": ["lora_tx_ini.json"]
+      "tables": ["lora_ini.json"]
    },
 
    "requires": ["app_c_fw", "sx128x"]
